@@ -46,17 +46,11 @@ namespace XInputExample
 
             aTimer = new System.Timers.Timer();
             aTimer.Elapsed += new ElapsedEventHandler(OnTimedEvent);
-            aTimer.Interval = 250;
+            aTimer.Interval = 50;
             bool controllerExists = LookForController();
 
             if( controllerExists )
             {
-
-                Vibration vibration = new Vibration();
-                vibration.LeftMotorSpeed = 6000;
-                vibration.RightMotorSpeed = 6000;
-                controller.SetVibration(vibration);
-
                 aTimer.Enabled = true;
             }
             else
@@ -120,7 +114,7 @@ namespace XInputExample
                 return false;
             }
 
-            MessageBox.Show("Found a XInput controller available " + controller.ToString() );
+            // MessageBox.Show("Found a XInput controller available " + controller.ToString() );
             return true;
         }
 
@@ -129,28 +123,24 @@ namespace XInputExample
         {
             var state = controller.GetState();
 
-            //if (previousState.PacketNumber != state.PacketNumber)
-            {
-                Tx_Box.Text += "\r\n" + state.Gamepad.ToString();
-                //Tx_Box.Text = state.Gamepad.ToString();
-                
-            }
+            Vibration vibration = new Vibration();
+
+            vibration.LeftMotorSpeed = (ushort)(255 * state.Gamepad.LeftTrigger);
+            vibration.RightMotorSpeed = (ushort)(255 * state.Gamepad.RightTrigger);
+            controller.SetVibration(vibration);
+
+            Tx_Box.Text = "\r\n" + state.Gamepad.ToString();
 
             //Thread.Sleep(10);
             previousState = state;
 
         }
-            /*
-
-                }
-
-                MessageBox.Show("End XGamepadApp");
-
-            }
-            */
-            public  bool IsKeyPressed(ConsoleKey key)
+        
+        /*
+        public  bool IsKeyPressed(ConsoleKey key)
         {
             return Console.KeyAvailable && Console.ReadKey(true).Key == key;
         }
+        */
     }
 }
