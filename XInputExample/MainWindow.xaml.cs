@@ -22,16 +22,21 @@ namespace XInputExample
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
-    /// </summary>
     /// 
+    /// 2020/10/01
+    /// 
+    /// Adapted from SharpDX sample 
+    /// https://github.com/sharpdx/SharpDX-Samples/tree/master/Desktop/XInput/XGamepadApp
+    /// 
+    /// SharpDX.XInput is installed through nuget package manager
+    /// 
+    /// </summary>
 
     public partial class MainWindow : Window
     {
-
         public TextBlock txb;
         System.Timers.Timer aTimer;
         Controller controller = null;
-        State previousState;
 
         public MainWindow()
         {
@@ -40,13 +45,9 @@ namespace XInputExample
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            // Other();
-            // NewThreadOk();
-
-
             aTimer = new System.Timers.Timer();
             aTimer.Elapsed += new ElapsedEventHandler(OnTimedEvent);
-            aTimer.Interval = 50;
+            aTimer.Interval = 10;
             bool controllerExists = LookForController();
 
             if( controllerExists )
@@ -59,6 +60,7 @@ namespace XInputExample
             }
         }
 
+
         private void OnTimedEvent(object source, ElapsedEventArgs e)
         {
             try
@@ -69,36 +71,28 @@ namespace XInputExample
                     UpdateInfo();
                 });
             }
-            catch (Exception)
+            catch (Exception eee)
             {
-                // MessageBox.Show(eee.Message);
+                MessageBox.Show(eee.Message);
             }
         }
 
 
-
         private void UpdateInfo()
         {
-            // Tx_Box.Text  += "\r\nHello Geeks !";
-            Other2();
+            ControlUpdate();
         }
-
-
-
-
 
 
         private bool LookForController()
         {
-            MessageBox.Show("Start XGamepadApp");
+            // MessageBox.Show("Start XGamepadApp");
 
-            // Console.WriteLine("Start XGamepadApp");
             // Initialize XInput
             var controllers = new[] { new Controller(UserIndex.One), new Controller(UserIndex.Two), new Controller(UserIndex.Three), new Controller(UserIndex.Four) };
 
 
             // Get 1st controller available
-            //  Controller controller = null;
             foreach (var selectControler in controllers)
             {
                 if (selectControler.IsConnected)
@@ -119,28 +113,27 @@ namespace XInputExample
         }
 
 
-        private void Other2()
+        private void ControlUpdate()
         {
             var state = controller.GetState();
 
             Vibration vibration = new Vibration();
 
-            vibration.LeftMotorSpeed = (ushort)(255 * state.Gamepad.LeftTrigger);
-            vibration.RightMotorSpeed = (ushort)(255 * state.Gamepad.RightTrigger);
+            vibration.RightMotorSpeed = (ushort)(255 * state.Gamepad.LeftTrigger);
+            vibration.LeftMotorSpeed = (ushort)(255 * state.Gamepad.RightTrigger);
             controller.SetVibration(vibration);
 
-            Tx_Box.Text = "\r\n" + state.Gamepad.ToString();
+            Tx_Box.Text =state.Gamepad.ToString()  ;
 
-            //Thread.Sleep(10);
-            previousState = state;
+            //  "\r\n" + 
 
+            /*
+            if (previousState.PacketNumber != state.PacketNumber)
+            {
+                previousState = state;
+            }
+            */
         }
-        
-        /*
-        public  bool IsKeyPressed(ConsoleKey key)
-        {
-            return Console.KeyAvailable && Console.ReadKey(true).Key == key;
-        }
-        */
+
     }
 }
