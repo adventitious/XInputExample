@@ -121,18 +121,10 @@ namespace XInputExample
 
             vibration.RightMotorSpeed = (ushort)(255 * state.Gamepad.LeftTrigger);
             vibration.LeftMotorSpeed = (ushort)(255 * state.Gamepad.RightTrigger);
+
             controller.SetVibration(vibration);
 
-            Tx_Box.Text =state.Gamepad.ToString()  ;
-
-            //  "\r\n" + 
-
-            /*
-            if (previousState.PacketNumber != state.PacketNumber)
-            {
-                previousState = state;
-            }
-            */
+            Tx_Box.Text =state.Gamepad.ToString();
         }
 
     }
